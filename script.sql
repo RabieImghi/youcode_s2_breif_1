@@ -3,7 +3,7 @@
 CREATE DATABASE SystemeGestionBreifs1;
 
 USE SystemeGestionBreifs1;
--- ---
+--
 -- Create les table de base donnes 
 
 --
