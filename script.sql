@@ -108,3 +108,18 @@ END //
 DELIMITER ;
 
 CALL InsertProjet('Projet Name','projet desc','2024-10-12','2024-12-12');
+
+/*En tant que membre de squad, je veux voir la liste des projets pour
+lesquels mon squad est responsable pour comprendre les projets actuels 
+et suivre lesresponsabilités.*/
+
+DELIMITER //
+
+CREATE PROCEDURE IF NOT EXISTS SelectProjet()
+BEGIN
+    SELECT * FROM Squad NATURAL JOIN Projet;
+    
+END //
+DELIMITER ;
+
+CALL SelectProjet();
