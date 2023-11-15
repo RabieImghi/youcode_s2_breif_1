@@ -123,3 +123,19 @@ END //
 DELIMITER ;
 
 CALL SelectProjet();
+
+/*En tant que responsable des ressources, je veux ajouter une 
+nouvelle ressource en spécifiant son nom, sa catégorie, sa 
+sous-catégorie et son association éventuelle à un squad ou à un projet,
+pour gérer efficacement les ressources disponibles.*/
+
+DELIMITER //
+
+CREATE PROCEDURE IF NOT EXISTS InsertRessource(IN p_ResourceName VARCHAR(50),IN p_CategoryID INT, IN p_SubcategoryID INT, IN p_SquadID INT, IN p_ProjectID INT)
+BEGIN
+    INSERT INTO Ressource (ResourceName, CategoryID, SubcategoryID, SquadID, ProjectID)
+    VALUES (p_ResourceName, p_CategoryID, p_SubcategoryID, p_SquadID, p_ProjectID);
+END //
+DELIMITER ;
+
+CALL InsertRessource('Resource Name', 1,1,1,1);
