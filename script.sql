@@ -93,3 +93,18 @@ END //
 DELIMITER ;
 
 CALL InsertSquad('Squad Name',1,1);
+
+/*En tant que chef de projet, je veux créer un nouveau projet en 
+fournissant des détails tels que le nom, la description et les dates,
+pour définir clairement les paramètres de chaque projet. */
+
+DELIMITER //
+
+CREATE PROCEDURE IF NOT EXISTS InsertProjet(IN p_ProjectName VARCHAR(50), IN p_ProjectDescription VARCHAR(50) , IN p_DateDebut VARCHAR(11), IN p_DateFin VARCHAR(11))
+BEGIN
+    INSERT INTO Projet (ProjectName, ProjectDescription, DateDebut, DateFin)
+    VALUES (p_ProjectName, p_ProjectDescription, p_DateDebut, p_DateFin);
+END //
+DELIMITER ;
+
+CALL InsertProjet('Projet Name','projet desc','2024-10-12','2024-12-12');
