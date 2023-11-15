@@ -1,5 +1,6 @@
 --
 -- Base de données : `SystemeGestionBreifs1`
+DROP DATABASE IF EXISTS youcode_SystemeGestionBreifs1;
 CREATE DATABASE IF NOT EXISTS youcode_SystemeGestionBreifs1;
 
 USE youcode_SystemeGestionBreifs1;
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS  Utilisateur(
     `UserID` INT PRIMARY KEY AUTO_INCREMENT,
     `userName` VARCHAR(50),
     `email` VARCHAR(50)
-);
+)ENGINE=InnoDB;
 --
 -- Create la table Projet de base donnes 
 
@@ -23,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Projet(
     `ProjectDescription` VARCHAR(100),
     `DateDebut` DATE,
     `DateFin` DATE
-);
+)ENGINE=InnoDB;
 --
 -- Create la table Squad de base donnes 
 
@@ -34,21 +35,21 @@ CREATE TABLE IF NOT EXISTS Squad(
     `UserID` INT,
     FOREIGN KEY (ProjectID) REFERENCES Projet(ProjectID),
     FOREIGN KEY (UserID) REFERENCES Utilisateur(UserID)
-);
+)ENGINE=InnoDB;
 --
 -- Create la table Category de base donnes  
 
 CREATE TABLE IF NOT EXISTS Category(
     `CategoryID` INT PRIMARY KEY AUTO_INCREMENT,
     `CategoryDescription` VARCHAR(100)
-);
+)ENGINE=InnoDB;
 --
 -- Create la table Subcategory de base donnes  
 
 CREATE TABLE IF NOT EXISTS Subcategory(
     `SubcategoryID` INT PRIMARY KEY AUTO_INCREMENT,
     `SubcategoryDescription` VARCHAR(100)
-);
+)ENGINE=InnoDB;
 --
 -- Create la table Ressource de base donnes  
 
@@ -61,9 +62,9 @@ CREATE TABLE IF NOT EXISTS Ressource(
     `ProjectID` INT,
     FOREIGN KEY (CategoryID) REFERENCES Category(`CategoryID`),
     FOREIGN KEY (SubcategoryID) REFERENCES Subcategory(`SubcategoryID`),
-    FOREIGN KEY (SquadID) REFERENCES SquadID(`SquadID`),
-    FOREIGN KEY (ProjectID) REFERENCES ProjectID(`ProjectID`)
-);
+    FOREIGN KEY (SquadID) REFERENCES Squad(`SquadID`),
+    FOREIGN KEY (ProjectID) REFERENCES Projet(`ProjectID`)
+)ENGINE=InnoDB;
 
 
 /* En tant qu'administrateur système, je veux créer de nouveaux 
@@ -92,7 +93,7 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL InsertSquad('Squad Name',1,1);
+-- CALL InsertSquad('Squad Name',1,1);
 
 /*En tant que chef de projet, je veux créer un nouveau projet en 
 fournissant des détails tels que le nom, la description et les dates,
@@ -138,4 +139,4 @@ BEGIN
 END //
 DELIMITER ;
 
-CALL InsertRessource('Resource Name', 1,1,1,1);
+-- CALL InsertRessource('Resource Name', 1,1,1,1);
