@@ -7,14 +7,13 @@ USE youcode_SystemeGestionBreifs1;
 --
 -- Create les table de base donnes 
 
---
 -- Create la table utilisateur de base donnes 
 CREATE TABLE IF NOT EXISTS  Utilisateur(
     `UserID` INT PRIMARY KEY AUTO_INCREMENT,
     `userName` VARCHAR(50),
     `email` VARCHAR(50)
 )ENGINE=InnoDB;
---
+
 -- Create la table Projet de base donnes 
 CREATE TABLE IF NOT EXISTS Projet(
     `ProjectID` INT PRIMARY KEY AUTO_INCREMENT,
@@ -23,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Projet(
     `DateDebut` DATE,
     `DateFin` DATE
 )ENGINE=InnoDB;
---
+
 -- Create la table Squad de base donnes 
 CREATE TABLE IF NOT EXISTS Squad(
     `SquadID` INT PRIMARY KEY AUTO_INCREMENT,
@@ -33,19 +32,19 @@ CREATE TABLE IF NOT EXISTS Squad(
     FOREIGN KEY (ProjectID) REFERENCES Projet(ProjectID),
     FOREIGN KEY (UserID) REFERENCES Utilisateur(UserID)
 )ENGINE=InnoDB;
---
+
 -- Create la table Category de base donnes  
 CREATE TABLE IF NOT EXISTS Category(
     `CategoryID` INT PRIMARY KEY AUTO_INCREMENT,
     `CategoryDescription` VARCHAR(100)
 )ENGINE=InnoDB;
---
+
 -- Create la table Subcategory de base donnes  
 CREATE TABLE IF NOT EXISTS Subcategory(
     `SubcategoryID` INT PRIMARY KEY AUTO_INCREMENT,
     `SubcategoryDescription` VARCHAR(100)
 )ENGINE=InnoDB;
---
+
 -- Create la table Ressource de base donnes  
 CREATE TABLE IF NOT EXISTS Ressource(
     `ResourceID` INT PRIMARY KEY AUTO_INCREMENT,
@@ -59,9 +58,8 @@ CREATE TABLE IF NOT EXISTS Ressource(
     FOREIGN KEY (SquadID) REFERENCES Squad(`SquadID`),
     FOREIGN KEY (ProjectID) REFERENCES Projet(`ProjectID`)
 )ENGINE=InnoDB;
-/* En tant qu'administrateur système, je veux créer de nouveaux 
-utilisateurs dans la base de données pour maintenir une liste
-actualisée des membres de l'équipe. -------------------------------------Q------------------------------------- 1*/
+
+/* -------------------------------------------------------------USER STORY 1 INSERT NEW USER------------------------------------- */
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS InsertUtilisateur(IN p_userName VARCHAR(255), IN p_email VARCHAR(255))
 BEGIN
@@ -70,20 +68,8 @@ BEGIN
 END //
 DELIMITER ;
 CALL InsertUtilisateur('User Name','username@gmail.com');
-/* En tant que leader de squad, je souhaite créer un nouveau squad,
-spécifiant le nom et ajoutant des membres à ce squad, pour former 
-rapidement des équipes dédiées à des projets spécifiques.-------------------------------------------------------2*/
-DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS InsertSquad(IN p_SquadName VARCHAR(50), IN p_ProjectID INT , IN p_UserID INT)
-BEGIN
-    INSERT INTO Squad (SquadName, ProjectID, UserID)
-    VALUES (p_SquadNAME, p_ProjectID, p_UserID);
-END //
-DELIMITER ;
-CALL InsertSquad('Squad Name',1,1);
-/*En tant que chef de projet, je veux créer un nouveau projet en 
-fournissant des détails tels que le nom, la description et les dates,
-pour définir clairement les paramètres de chaque projet. -------------------------------------------------------3*/
+
+/* -------------------------------------------------------------USER STORY 3 INSERT NEW PROJECT----------------------------------- */
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS InsertProjet(IN p_ProjectName VARCHAR(50), IN p_ProjectDescription VARCHAR(50) , IN p_DateDebut VARCHAR(11), IN p_DateFin VARCHAR(11))
 BEGIN
@@ -92,52 +78,27 @@ BEGIN
 END //
 DELIMITER ;
 CALL InsertProjet('Projet Name','projet desc','2024-10-12','2024-12-12');
-/*En tant que membre de squad, je veux voir la liste des projets pour
-lesquels mon squad est responsable pour comprendre les projets actuels 
-et suivre lesresponsabilités.-----------------------------------------------------------------------------------4*/
+
+/* -------------------------------------------------------------USER STORY 2 INSERT NEW SQUAD------------------------------------- */
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS InsertSquad(IN p_SquadName VARCHAR(50), IN p_ProjectID INT , IN p_UserID INT)
+BEGIN
+    INSERT INTO Squad (SquadName, ProjectID, UserID)
+    VALUES (p_SquadNAME, p_ProjectID, p_UserID);
+END //
+DELIMITER ;
+CALL InsertSquad('Squad Name',1,1);
+
+/* -------------------------------------------------------------USER STORY 4 SELECT PROJECT FOR MY SQUAD------------------------------------- */
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS SelectProjet()
 BEGIN
     SELECT * FROM Squad NATURAL JOIN Projet;
 END //
 DELIMITER ;
--- CALL SelectProjet();
-/*En tant que responsable des ressources, je veux ajouter une 
-nouvelle ressource en spécifiant son nom, sa catégorie, sa 
-sous-catégorie et son association éventuelle à un squad ou à un projet,
-pour gérer efficacement les ressources disponibles.-------------------------------------------------------------5*/
-DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS InsertRessource(IN p_ResourceName VARCHAR(50),IN p_CategoryID INT, IN p_SubcategoryID INT, IN p_SquadID INT, IN p_ProjectID INT)
-BEGIN
-    INSERT INTO Ressource (ResourceName, CategoryID, SubcategoryID, SquadID, ProjectID)
-    VALUES (p_ResourceName, p_CategoryID, p_SubcategoryID, p_SquadID, p_ProjectID);
-END //
-DELIMITER ;
--- CALL InsertRessource('Resource Name', 1,1,1,1);
-/* En tant que développeur Fullstack, je veux pouvoir mettre à jour les 
-détails d'un utilisateur, d'un squad, d'un projet ou d'une ressource 
-existante pour ajuster les informations en fonction des évolutions. ---------------------------------------------6*/
-DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS UpdateRessource(IN p_ResourceID INT,IN p_ResourceName VARCHAR(50),IN p_CategoryID INT,IN p_SubcategoryID INT,IN p_SquadID INT,IN p_ProjectID INT)
-BEGIN
-    UPDATE Ressource
-    SET ResourceName = p_ResourceName, CategoryID = p_CategoryID, SubcategoryID = p_SubcategoryID, SquadID = p_SquadID, ProjectID = p_ProjectID
-    WHERE ResourceID = p_ResourceID;
-END //
-DELIMITER ;
-DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS UpdateUtilisateur(IN p_UserID INT,IN p_userName VARCHAR(50),p_email VARCHAR(50))
-BEGIN
-    UPDATE Utilisateur
-    SET userName = p_userName, email = p_email
-    WHERE UserID = p_UserID;
-END //
-DELIMITER ;
--- CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com');
+CALL SelectProjet();
 
-/* En tant que responsable des catégories et sous-catégories, je souhaite créer de
-nouvelles catégories et sous-catégories pour classer les ressources et organiser
-efficacement la base de données.*/
+/* -------------------------------------------------------------USER STORY 7 INSERT NEW CETEGORY / SUBCATEGORY-------------------------- */
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS InsertCategory(IN p_CategoryDescription VARCHAR(50))
 BEGIN
@@ -146,6 +107,7 @@ BEGIN
 END //
 DELIMITER ;
 CALL InsertCategory("cat 1");
+
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS InsertSubcategory(IN p_SubcategoryDescription VARCHAR(50))
 BEGIN
@@ -154,3 +116,35 @@ BEGIN
 END //
 DELIMITER ;
 CALL InsertSubcategory("sub cat 1");
+
+/* -------------------------------------------------------------USER STORY 5 INSERT NEW RESSOURCE------------------------------------- */
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS InsertRessource(IN p_ResourceName VARCHAR(50),IN p_CategoryID INT, IN p_SubcategoryID INT, IN p_SquadID INT, IN p_ProjectID INT)
+BEGIN
+    INSERT INTO Ressource (ResourceName, CategoryID, SubcategoryID, SquadID, ProjectID)
+    VALUES (p_ResourceName, p_CategoryID, p_SubcategoryID, p_SquadID, p_ProjectID);
+END //
+DELIMITER ;
+CALL InsertRessource('Resource Name', 1,1,1,1);
+
+/* -------------------------------------------------------------USER STORY 6 UPDATE RESSOURCE INFO------------------------------------- */
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS UpdateRessource(IN p_ResourceID INT,IN p_ResourceName VARCHAR(50),IN p_CategoryID INT,IN p_SubcategoryID INT,IN p_SquadID INT,IN p_ProjectID INT)
+BEGIN
+    UPDATE Ressource
+    SET ResourceName = p_ResourceName, CategoryID = p_CategoryID, SubcategoryID = p_SubcategoryID, SquadID = p_SquadID, ProjectID = p_ProjectID
+    WHERE ResourceID = p_ResourceID;
+END //
+DELIMITER ;
+CALL UpdateRessource(1,'Ressource NV',1,1,1,1); 
+
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS UpdateUtilisateur(IN p_UserID INT,IN p_userName VARCHAR(50),p_email VARCHAR(50))
+BEGIN
+    UPDATE Utilisateur
+    SET userName = p_userName, email = p_email
+    WHERE UserID = p_UserID;
+END //
+DELIMITER ;
+CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com');
+
