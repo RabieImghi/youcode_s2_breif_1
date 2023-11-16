@@ -93,7 +93,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL InsertSquad('Squad Name',1,1);
+CALL InsertSquad('Squad Name',1,1);
 
 /*En tant que chef de projet, je veux créer un nouveau projet en 
 fournissant des détails tels que le nom, la description et les dates,
@@ -139,4 +139,33 @@ BEGIN
 END //
 DELIMITER ;
 
--- CALL InsertRessource('Resource Name', 1,1,1,1);
+CALL InsertRessource('Resource Name', 1,1,1,1);
+
+/* En tant que développeur Fullstack, je veux pouvoir mettre à jour les 
+détails d'un utilisateur, d'un squad, d'un projet ou d'une ressource 
+existante pour ajuster les informations en fonction des évolutions. */
+DELIMITER //
+
+CREATE PROCEDURE IF NOT EXISTS UpdateRessource(
+    IN p_ResourceID INT,
+    IN p_ResourceName VARCHAR(50),
+    IN p_CategoryID INT,
+    IN p_SubcategoryID INT,
+    IN p_SquadID INT,
+    IN p_ProjectID INT
+)
+BEGIN
+    UPDATE Ressource
+    SET
+        ResourceName = p_ResourceName,
+        CategoryID = p_CategoryID,
+        SubcategoryID = p_SubcategoryID,
+        SquadID = p_SquadID,
+        ProjectID = p_ProjectID
+    WHERE ResourceID = p_ResourceID;
+END //
+
+DELIMITER ;
+
+
+-- CALL UpdateRessource(1,'Resource Name Neauveau', 1,1,1,1);
