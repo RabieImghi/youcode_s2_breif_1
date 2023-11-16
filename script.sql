@@ -134,3 +134,23 @@ BEGIN
 END //
 DELIMITER ;
 -- CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com');
+
+/* En tant que responsable des catégories et sous-catégories, je souhaite créer de
+nouvelles catégories et sous-catégories pour classer les ressources et organiser
+efficacement la base de données.*/
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS InsertCategory(IN p_CategoryDescription VARCHAR(50))
+BEGIN
+    INSERT INTO Category
+    SET CategoryDescription = p_CategoryDescription;
+END //
+DELIMITER ;
+CALL InsertCategory("cat 1");
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS InsertSubcategory(IN p_SubcategoryDescription VARCHAR(50))
+BEGIN
+    INSERT INTO Subcategory
+    SET SubcategoryDescription = p_SubcategoryDescription;
+END //
+DELIMITER ;
+CALL InsertSubcategory("sub cat 1");
