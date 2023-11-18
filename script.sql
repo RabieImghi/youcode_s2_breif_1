@@ -11,7 +11,8 @@ USE youcode_SystemeGestionBreifs1;
 CREATE TABLE IF NOT EXISTS  Utilisateur(
     `UserID` INT PRIMARY KEY AUTO_INCREMENT,
     `userName` VARCHAR(50),
-    `email` VARCHAR(50)
+    `email` VARCHAR(50),
+    `role` INT
 )ENGINE=InnoDB;
 
 -- Create la table Projet de base donnes 
@@ -28,9 +29,7 @@ CREATE TABLE IF NOT EXISTS Squad(
     `SquadID` INT PRIMARY KEY AUTO_INCREMENT,
     `SquadName` VARCHAR(50),
     `ProjectID` INT,
-    `UserID` INT,
-    FOREIGN KEY (ProjectID) REFERENCES Projet(ProjectID),
-    FOREIGN KEY (UserID) REFERENCES Utilisateur(UserID)
+    FOREIGN KEY (ProjectID) REFERENCES Projet(ProjectID)
 )ENGINE=InnoDB;
 
 -- Create la table Category de base donnes  
@@ -61,13 +60,13 @@ CREATE TABLE IF NOT EXISTS Ressource(
 
 /* -------------------------------------------------------------USER STORY 1 INSERT NEW USER------------------------------------- */
 DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS InsertUtilisateur(IN p_userName VARCHAR(255), IN p_email VARCHAR(255))
+CREATE PROCEDURE IF NOT EXISTS InsertUtilisateur(IN p_userName VARCHAR(255), IN p_email VARCHAR(255), IN p_role INT)
 BEGIN
-    INSERT INTO Utilisateur (userName, email)
-    VALUES (p_userName, p_email);
+    INSERT INTO Utilisateur (userName, email, role)
+    VALUES (p_userName, p_email, p_role);
 END //
 DELIMITER ;
-CALL InsertUtilisateur('User Name','username@gmail.com');
+CALL InsertUtilisateur('User Name','username@gmail.com',1);
 
 /* -------------------------------------------------------------USER STORY 3 INSERT NEW PROJECT----------------------------------- */
 DELIMITER //
@@ -81,13 +80,13 @@ CALL InsertProjet('Projet Name','projet desc','2024-10-12','2024-12-12');
 
 /* -------------------------------------------------------------USER STORY 2 INSERT NEW SQUAD------------------------------------- */
 DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS InsertSquad(IN p_SquadName VARCHAR(50), IN p_ProjectID INT , IN p_UserID INT)
+CREATE PROCEDURE IF NOT EXISTS InsertSquad(IN p_SquadName VARCHAR(50), IN p_ProjectID INT)
 BEGIN
-    INSERT INTO Squad (SquadName, ProjectID, UserID)
-    VALUES (p_SquadNAME, p_ProjectID, p_UserID);
+    INSERT INTO Squad (SquadName, ProjectID)
+    VALUES (p_SquadNAME, p_ProjectID );
 END //
 DELIMITER ;
-CALL InsertSquad('Squad Name',1,1);
+CALL InsertSquad('Squad Name',1);
 
 /* -------------------------------------------------------------USER STORY 4 SELECT PROJECT FOR MY SQUAD------------------------------------- */
 DELIMITER //
@@ -139,13 +138,12 @@ DELIMITER ;
 CALL UpdateRessource(1,'Ressource NV',1,1,1,1); 
 
 DELIMITER //
-CREATE PROCEDURE IF NOT EXISTS UpdateUtilisateur(IN p_UserID INT,IN p_userName VARCHAR(50),p_email VARCHAR(50))
+CREATE PROCEDURE IF NOT EXISTS UpdateUtilisateur(IN p_UserID INT,IN p_userName VARCHAR(50),p_email VARCHAR(50),IN p_role INT)
 BEGIN
     UPDATE Utilisateur
-    SET userName = p_userName, email = p_email
+    SET userName = p_userName, email = p_emailn role = p_role
     WHERE UserID = p_UserID;
 END //
 DELIMITER ;
-CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com');
--- CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com');
+CALL UpdateUtilisateur(1,'User Name Neauveau','use@gmail.com',1);
 
