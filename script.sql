@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS Squad(
     FOREIGN KEY (ProjectID) REFERENCES Projet(ProjectID)
 )ENGINE=InnoDB;
 
+-- Create la table Squad de base donnes 
+CREATE TABLE IF NOT EXISTS SquadMembre(
+    `SquadMemberID` INT PRIMARY KEY AUTO_INCREMENT,
+    `SquadID` INT,
+    `UserID` INT,
+    FOREIGN KEY (SquadID) REFERENCES Squad(SquadID),
+    FOREIGN KEY (UserID) REFERENCES Utilisateur(UserID)
+)ENGINE=InnoDB;
+
 -- Create la table Category de base donnes  
 CREATE TABLE IF NOT EXISTS Category(
     `CategoryID` INT PRIMARY KEY AUTO_INCREMENT,
@@ -88,11 +97,20 @@ END //
 DELIMITER ;
 CALL InsertSquad('Squad Name',1);
 
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS InsertSquadMembre(IN p_SquadID INT, IN p_UserID INT )
+BEGIN
+    INSERT INTO SquadMembre (SquadID, UserID)
+    VALUES (p_SquadID, p_UserID );
+END //
+DELIMITER ;
+CALL InsertSquadMembre(1,1);
+
 /* -------------------------------------------------------------USER STORY 4 SELECT PROJECT FOR MY SQUAD------------------------------------- */
 DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS SelectProjet()
 BEGIN
-    SELECT * FROM Squad NATURAL JOIN Projet;
+    SELECT * FROM Utilisateur NATURAL JOIN SquadMembre NATURAL JOIN Squad NATURAL JOIN Projet;
 END //
 DELIMITER ;
 CALL SelectProjet();
@@ -141,7 +159,7 @@ DELIMITER //
 CREATE PROCEDURE IF NOT EXISTS UpdateUtilisateur(IN p_UserID INT,IN p_userName VARCHAR(50),p_email VARCHAR(50),IN p_role INT)
 BEGIN
     UPDATE Utilisateur
-    SET userName = p_userName, email = p_emailn role = p_role
+    SET userName = p_userName, email = p_email, role = p_role
     WHERE UserID = p_UserID;
 END //
 DELIMITER ;
